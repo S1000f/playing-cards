@@ -2,7 +2,7 @@ package game.card.poker
 
 import game.Game
 import game.card.Rank
-import game.card.playingcards.FrenchRank
+import game.card.playingcards.FrenchRank.*
 import game.card.playingcards.PlayingCard
 import java.lang.Integer.max
 
@@ -62,17 +62,17 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
         override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
             if (cards.size < 5) return null
 
-            val sorted = cards.sortedByDescending { card -> card.rank.order }
+            with(cards.sortedByDescending { card -> card.rank.order }) {
+                if (sumRankStreak(first()) == take(5).sumOf { it.rank.order }) {
+                    return STRAIGHT to this
+                }
 
-            if (sumRankStreak(sorted.first()) == sorted.take(5).sumOf { it.rank.order }) {
-                return this to sorted
-            }
-
-            if (sorted.map { it.rank }.containsAll(setOf(FrenchRank.ACE, FrenchRank.KING))
-                && sumRankStreak(sorted.first(), 4) == sorted.take(4).sumOf { it.rank.order }
-            ) {
-                return sorted.find { it.rank == FrenchRank.ACE }
-                    ?.let { this to sorted.take(4).toMutableList().apply { add(0, it) } }
+                if (map { it.rank }.containsAll(setOf(ACE, KING))
+                    && sumRankStreak(first(), 4) == take(4).sumOf { it.rank.order }
+                ) {
+                    return find { it.rank == ACE }
+                        ?.let { STRAIGHT to take(4).toMutableList().apply { add(0, it) } }
+                }
             }
 
             return null

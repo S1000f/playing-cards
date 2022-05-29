@@ -27,11 +27,22 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
 
     FLUSH("Flush", 4) {
         override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            cards.groupBy { it.suit }
+            if (cards.size < 5) return null
+
+            return cards.groupBy { it.suit }
                 .filterValues { it.size >= 5 }
                 .map { it.value }
-                .map { it.sortedByDescending { card -> card.rank.order } }
-                .
+                .map { it.sortedByDescending { card -> card.rank.order }.take(5) }
+                .maxWithOrNull { a, b ->
+                    compareValuesBy(
+                        a,
+                        b,
+                        { x: List<PlayingCard> -> x.component1().rank.order },
+                        { x: List<PlayingCard> -> x.component2().rank.order },
+                        { x: List<PlayingCard> -> x.component3().rank.order },
+                        { x: List<PlayingCard> -> x.component4().rank.order },
+                        { x: List<PlayingCard> -> x.component5().rank.order })
+                }?.let { FLUSH to it }
         }
     },
 
@@ -68,8 +79,8 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
     abstract fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>?
 
     companion object {
-        fun rank(cards: Collection<PlayingCard>): MutableList<Pair<PokerRank, List<PlayingCard>>> {
-
+        fun rank(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+            return FLUSH.match(cards)
         }
     }
 

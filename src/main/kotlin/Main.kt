@@ -1,27 +1,19 @@
-import card.playingcards.*
-import game.card.playingcards.PlayingCardDeck
-import game.card.playingcards.standard52
+
+import game.card.playingcards.*
+import game.card.poker.PokerHand
 
 fun main() {
 
-    val deck = PlayingCardDeck.standard52()
-    println(deck)
+    val hand = PokerHand(mutableListOf(
+        PlayingCard(FrenchSuit.CLUB to FrenchRank.KING),
+        PlayingCard(FrenchSuit.CLUB to FrenchRank.QUEEN),
+        PlayingCard(FrenchSuit.CLUB to FrenchRank.FIVE),
+        PlayingCard(FrenchSuit.CLUB to FrenchRank.TEN),
+        PlayingCard(FrenchSuit.CLUB to FrenchRank.JACK),
+        PlayingCard(FrenchSuit.CLUB to FrenchRank.THREE),
+        PlayingCard(FrenchSuit.CLUB to FrenchRank.SEVEN),
+    ))
 
-    val draw = deck.draw(index = 50)
-    val card2s3 = deck.draw(2, 49)
-
-    println(draw)
-    println(card2s3)
-
-    val shuffle = deck.shuffle()
-    val shuffle1 = deck.shuffle().shuffle()
-
-    println(deck)
-    println(shuffle)
-    println(shuffle1)
-    println(shuffle)
-
-    val uni = "\u2660"
-    println(uni)
+    println(hand)
 
 }

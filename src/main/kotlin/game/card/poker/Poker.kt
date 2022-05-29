@@ -2,9 +2,21 @@ package game.card.poker
 
 import game.Game
 import game.card.Rank
+import game.card.playingcards.FrenchRank
 import game.card.playingcards.PlayingCard
+import java.lang.Integer.max
 
 interface Poker : Game<PlayingCard>
+
+fun sumRankStreak(card: PlayingCard, streak: Int = 5): Int {
+    val rank = card.rank.order
+    var sum = 0
+    for (i in rank downTo max(rank - (streak - 1), 0)) {
+        sum += i
+    }
+
+    return sum
+}
 
 enum class PokerRank(override val label: String, override val order: Int) : Poker, Rank {
     STRAIGHT_FLUSH("Straight flush", 1) {
@@ -42,13 +54,28 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
                         { x: List<PlayingCard> -> x.component3().rank.order },
                         { x: List<PlayingCard> -> x.component4().rank.order },
                         { x: List<PlayingCard> -> x.component5().rank.order })
-                }?.let { FLUSH to it }
+                }?.let { this to it }
         }
     },
 
     STRAIGHT("Straight", 5) {
         override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            TODO("Not yet implemented")
+            if (cards.size < 5) return null
+
+            val sorted = cards.sortedByDescending { card -> card.rank.order }
+
+            if (sumRankStreak(sorted.first()) == sorted.take(5).sumOf { it.rank.order }) {
+                return this to sorted
+            }
+
+            if (sorted.map { it.rank }.containsAll(setOf(FrenchRank.ACE, FrenchRank.KING))
+                && sumRankStreak(sorted.first(), 4) == sorted.take(4).sumOf { it.rank.order }
+            ) {
+                return sorted.find { it.rank == FrenchRank.ACE }
+                    ?.let { this to sorted.take(4).toMutableList().apply { add(0, it) } }
+            }
+
+            return null
         }
     },
 
@@ -80,7 +107,7 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
 
     companion object {
         fun rank(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            return FLUSH.match(cards)
+            return FLUSH.match(cards) ?: STRAIGHT.match(cards)
         }
     }
 

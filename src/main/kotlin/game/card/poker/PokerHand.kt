@@ -10,8 +10,8 @@ data class PokerHand(private val cards: MutableList<PlayingCard>) : Hand<Playing
 
     override fun toString(): String {
         return """
-            cards: ${cards}
-            ranks: ${ranks}
+            ${cards}
+            ranking: ${ranks}
         """.trimIndent()
     }
 }

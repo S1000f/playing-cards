@@ -21,7 +21,11 @@ fun sumRankStreak(card: PlayingCard, streak: Int = 5): Int {
 enum class PokerRank(override val label: String, override val order: Int) : Poker, Rank {
     STRAIGHT_FLUSH("Straight flush", 1) {
         override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            TODO()
+            return STRAIGHT.match(cards)
+                ?.second
+                ?.let { FLUSH.match(it) }
+                ?.second
+                ?.let { this to it }
         }
     },
 
@@ -107,7 +111,9 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
 
     companion object {
         fun rank(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            return FLUSH.match(cards) ?: STRAIGHT.match(cards)
+            return STRAIGHT_FLUSH.match(cards)
+                ?: FLUSH.match(cards)
+                ?: STRAIGHT.match(cards)
         }
     }
 

@@ -51,8 +51,32 @@ class PokerTest {
             SPADE to TWO
         )
 
+        val hand2 = PokerHand.of(
+            SPADE to KING,
+            HEART to SEVEN,
+            DIAMOND to FIVE,
+            CLUB to SIX,
+            CLUB to EIGHT,
+            HEART to FOUR
+        )
+
         assertEquals(STRAIGHT, hand.rank())
-        assertEquals(STRAIGHT, hand.rank())
+        assertEquals(STRAIGHT, hand1.rank())
+        assertEquals(STRAIGHT, hand2.rank())
+    }
+
+    @DisplayName("these hand-rankings should be a Quads")
+    @Test
+    fun fourOfAKindRankTest() {
+        val hand = PokerHand.of(
+            DIAMOND to JACK,
+            CLUB to JACK,
+            HEART to KING,
+            SPADE to JACK,
+            HEART to JACK
+        )
+
+        assertEquals(FOUR_OF_A_KIND, hand.rank())
     }
 
     @DisplayName("these hand-rankings should be a STRAIGHT_FLUSH")

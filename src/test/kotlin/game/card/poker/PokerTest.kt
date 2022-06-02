@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PokerTest {
@@ -24,7 +25,49 @@ class PokerTest {
             CLUB to QUEEN
         )
 
+        val hand1 = PokerHand.of(
+            HEART to TEN,
+            DIAMOND to TEN,
+            HEART to THREE,
+            CLUB to TEN,
+            SPADE to NINE
+        )
+
+        val hand2 = PokerHand.of(
+            CLUB to TWO,
+            SPADE to FOUR,
+            SPADE to EIGHT,
+            CLUB to KING,
+            HEART to TWO,
+            DIAMOND to TWO
+        )
+
         assertEquals(THREE_OF_A_KIND, hand.rank())
+        assertEquals(THREE_OF_A_KIND, hand1.rank())
+        assertEquals(THREE_OF_A_KIND, hand2.rank())
+    }
+
+    @DisplayName("these hand-rankings should not be a Trips")
+    @Test
+    fun tripsRankTest2() {
+        val other = PokerHand.of(
+            CLUB to TEN,
+            SPADE to KING,
+            HEART to TEN,
+            SPADE to TEN,
+            HEART to KING
+        )
+
+        val other1 = PokerHand.of(
+            SPADE to FOUR,
+            CLUB to FIVE,
+            SPADE to FIVE,
+            HEART to FIVE,
+            DIAMOND to FIVE
+        )
+
+        assertNotEquals(THREE_OF_A_KIND, other.rank())
+        assertNotEquals(THREE_OF_A_KIND, other1.rank())
     }
 
     @DisplayName("this hand-ranking should be a FLUSH")
@@ -100,8 +143,8 @@ class PokerTest {
         val hand = PokerHand.of(
             CLUB to QUEEN,
             CLUB to KING,
+            DIAMOND to JACK,
             CLUB to JACK,
-            CLUB to TWO,
             CLUB to NINE,
             CLUB to TEN,
         )

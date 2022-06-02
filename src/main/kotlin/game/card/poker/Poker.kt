@@ -45,23 +45,31 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
             if (cards.size < 5) return null
 
             with(cards.groupBy { it.rank.order }) {
-                if (any { it.value.size > 3 || it.value.size == 2 } && !any{ it.value.size == 3 }) {
+                if (any { it.value.size > 3 || it.value.size == 2 } || !any { it.value.size == 3 }) {
                     return null
                 }
 
-                return filterValues { it.size == 3 }
+                val trips = filterValues { it.size == 3 }
                     .values
-                    .maxByOrNull { it.first().rank.order }!!
-                    .let { THREE_OF_A_KIND to it }
+                    .maxByOrNull { it.first().rank.order } ?: return null
+
+                val apply = cards.toMutableList()
+                    .apply { removeAll(trips) }
+                    .sortedByDescending { it.rank.order }
+                    .take(2)
+
+                return THREE_OF_A_KIND to trips.toMutableList().apply { addAll(3, apply) }
             }
         }
     },
 
     STRAIGHT("Straight", 5) {
         override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            if (cards.size < 5) return null
+            val distinct = cards.distinctBy { it.rank.order }
 
-            with(cards.sortedByDescending { card -> card.rank.order }) {
+            if (distinct.size < 5) return null
+
+            with(distinct.sortedByDescending { card -> card.rank.order }) {
                 for ((index, item) in withIndex()) {
                     if (sumRankStreak(item) == sumSkipTake(5, skip = index)) {
                         return STRAIGHT to this
@@ -121,15 +129,20 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
 
     STRAIGHT_FLUSH("Straight flush", 9) {
         override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            return STRAIGHT.match(cards)
-                ?.second
-                ?.let { FLUSH.match(it) }
-                ?.second
-                ?.let { this to it }
+            val filter = cards.groupBy { it.suit }
+                .filterValues { it.size >= 5 }
+                .map { it.value }
+                .filter { STRAIGHT.match(it) != null }
+
+            val list = filter.find { it.first().rank == ACE }
+                ?: filter.maxByOrNull { it.first().rank.order }
+                ?: return null
+
+            return this to list
         }
     };
 
-    protected abstract fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>?
+    abstract fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>?
 
     companion object {
         fun rank(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {

@@ -12,6 +12,21 @@ import kotlin.test.assertEquals
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PokerTest {
 
+    @DisplayName("these hand-ranking should be a Trips")
+    @Test
+    fun tripsRankTest() {
+        val hand = PokerHand.of(
+            HEART to KING,
+            DIAMOND to JACK,
+            HEART to JACK,
+            HEART to TEN,
+            SPADE to JACK,
+            CLUB to QUEEN
+        )
+
+        assertEquals(THREE_OF_A_KIND, hand.rank())
+    }
+
     @DisplayName("this hand-ranking should be a FLUSH")
     @Test
     fun flushRankTest() {

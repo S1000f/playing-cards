@@ -42,7 +42,18 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
 
     THREE_OF_A_KIND("Trips", 4) {
         override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
-            TODO("Not yet implemented")
+            if (cards.size < 5) return null
+
+            with(cards.groupBy { it.rank.order }) {
+                if (any { it.value.size > 3 || it.value.size == 2 } && !any{ it.value.size == 3 }) {
+                    return null
+                }
+
+                return filterValues { it.size == 3 }
+                    .values
+                    .maxByOrNull { it.first().rank.order }!!
+                    .let { THREE_OF_A_KIND to it }
+            }
         }
     },
 
@@ -118,7 +129,7 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
         }
     };
 
-    abstract fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>?
+    protected abstract fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>?
 
     companion object {
         fun rank(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
@@ -128,6 +139,7 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
                 ?: FOUR_OF_A_KIND.match(cardsCopy)
                 ?: FLUSH.match(cardsCopy)
                 ?: STRAIGHT.match(cardsCopy)
+                ?: THREE_OF_A_KIND.match(cardsCopy)
         }
     }
 

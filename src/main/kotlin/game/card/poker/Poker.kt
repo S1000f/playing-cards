@@ -1,15 +1,14 @@
 package game.card.poker
 
 import game.Game
-import game.card.Rank
+import game.card.playingcards.*
 import game.card.playingcards.FrenchRank.*
-import game.card.playingcards.PlayingCard
 import tool.sumSkipTake
 import java.lang.Integer.max
 
-interface Poker : Game<PlayingCard>
+interface Poker : Game<FrenchCard>
 
-fun sumRankStreak(card: PlayingCard, streak: Int = 5): Int {
+fun <T: PlayingCard<FrenchSuit, FrenchRank>>sumRankStreak(card: T, streak: Int = 5): Int {
     val rank = card.rank.order
     var sum = 0
     for (i in rank downTo max(rank - (streak - 1), 0)) {
@@ -19,29 +18,30 @@ fun sumRankStreak(card: PlayingCard, streak: Int = 5): Int {
     return sum
 }
 
-fun Collection<PlayingCard>.sumSkipTake(take: Int, skip: Int = 0) = sumSkipTake(take, skip) { x -> x.rank.order }
+fun <T: PlayingCard<FrenchSuit, FrenchRank>> Collection<T>.sumSkipTake(take: Int, skip: Int = 0) =
+    sumSkipTake(take, skip) { x -> x.rank.order }
 
 enum class PokerRank(override val label: String, override val order: Int) : Poker, Rank {
     HIGH_CARD("High card", 1) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             TODO("Not yet implemented")
         }
     },
 
     ONE_PAIR("One pair", 2) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             TODO("Not yet implemented")
         }
     },
 
     TWO_PAIR("Two pair", 3) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             TODO("Not yet implemented")
         }
     },
 
     THREE_OF_A_KIND("Trips", 4) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             if (cards.size < 5) return null
 
             with(cards.groupBy { it.rank.order }) {
@@ -64,7 +64,7 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
     },
 
     STRAIGHT("Straight", 5) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             val distinct = cards.distinctBy { it.rank.order }
 
             if (distinct.size < 5) return null
@@ -89,7 +89,7 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
     },
 
     FLUSH("Flush", 6) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             if (cards.size < 5) return null
 
             return cards.groupBy { it.suit }
@@ -100,23 +100,23 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
                     compareValuesBy(
                         a,
                         b,
-                        { x: List<PlayingCard> -> x.component1().rank.order },
-                        { x: List<PlayingCard> -> x.component2().rank.order },
-                        { x: List<PlayingCard> -> x.component3().rank.order },
-                        { x: List<PlayingCard> -> x.component4().rank.order },
-                        { x: List<PlayingCard> -> x.component5().rank.order })
+                        { x: List<T> -> x.component1().rank.order },
+                        { x: List<T> -> x.component2().rank.order },
+                        { x: List<T> -> x.component3().rank.order },
+                        { x: List<T> -> x.component4().rank.order },
+                        { x: List<T> -> x.component5().rank.order })
                 }?.let { this to it }
         }
     },
 
     FULL_HOUSE("Full house", 7) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             TODO("Not yet implemented")
         }
     },
 
     FOUR_OF_A_KIND("Quads", 8) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             if (cards.size < 5) return null
 
             with(cards.sortedByDescending { it.rank.order }) {
@@ -128,7 +128,7 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
     },
 
     STRAIGHT_FLUSH("Straight flush", 9) {
-        override fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             val filter = cards.groupBy { it.suit }
                 .filterValues { it.size >= 5 }
                 .map { it.value }
@@ -142,10 +142,10 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
         }
     };
 
-    abstract fun match(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>?
+    abstract fun <T: PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>?
 
     companion object {
-        fun rank(cards: Collection<PlayingCard>): Pair<PokerRank, List<PlayingCard>>? {
+        fun <T: PlayingCard<FrenchSuit, FrenchRank>> rank(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             val cardsCopy = cards.toMutableList()
 
             return STRAIGHT_FLUSH.match(cardsCopy)

@@ -1,7 +1,5 @@
 package game.card.playingcards
 
-import game.card.Suit
-
 enum class FrenchSuit(override val label: String, override val unicode: String) : Suit {
     SPADE("s", "\u2660"),
     HEART("h", "\u2665"),
@@ -29,19 +27,19 @@ enum class FrenchRank(override val label: String, override val order: Int) : Pip
     }
 }
 
-fun PlayingCardDeck.Companion.standard52(order: List<Pair<Suit, IntProgression>>): PlayingCardDeck {
-    val list = mutableListOf<PlayingCard>()
+fun FrenchCardDeck.Companion.standard52(order: List<Pair<FrenchSuit, IntProgression>>): FrenchCardDeck {
+    val list = mutableListOf<FrenchCard>()
     order.forEach {
         for (i in it.second) {
-            list.add(PlayingCard(it.first to FrenchRank.findByOrder(i)))
+            list.add(FrenchCard(it.first to FrenchRank.findByOrder(i)))
         }
     }
 
-    return PlayingCardDeck(list)
+    return FrenchCardDeck(list)
 }
 
-fun PlayingCardDeck.Companion.standard52(): PlayingCardDeck {
-    val order = mutableListOf<Pair<Suit, IntProgression>>()
+fun FrenchCardDeck.Companion.standard52(): FrenchCardDeck {
+    val order = mutableListOf<Pair<FrenchSuit, IntProgression>>()
     val asc = 1..13
     val desc = 13 downTo 1
 

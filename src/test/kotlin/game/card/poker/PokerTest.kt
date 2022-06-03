@@ -3,7 +3,7 @@ package game.card.poker
 import game.card.playingcards.FrenchRank.*
 import game.card.playingcards.FrenchSuit.*
 import game.card.poker.PokerRank.*
-import game.card.playingcards.PlayingCard
+import game.card.playingcards.FrenchCard
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -75,13 +75,13 @@ class PokerTest {
     fun flushRankTest() {
         val hand = PokerHand(
             mutableListOf(
-                PlayingCard(CLUB to KING),
-                PlayingCard(CLUB to QUEEN),
-                PlayingCard(CLUB to FIVE),
-                PlayingCard(CLUB to TEN),
-                PlayingCard(CLUB to JACK),
-                PlayingCard(CLUB to THREE),
-                PlayingCard(CLUB to SEVEN),
+                FrenchCard(CLUB to KING),
+                FrenchCard(CLUB to QUEEN),
+                FrenchCard(CLUB to FIVE),
+                FrenchCard(CLUB to TEN),
+                FrenchCard(CLUB to JACK),
+                FrenchCard(CLUB to THREE),
+                FrenchCard(CLUB to SEVEN),
             )
         )
 

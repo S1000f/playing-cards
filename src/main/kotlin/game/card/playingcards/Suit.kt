@@ -1,4 +1,4 @@
-package game.card
+package game.card.playingcards
 
 interface Suit {
     val label: String

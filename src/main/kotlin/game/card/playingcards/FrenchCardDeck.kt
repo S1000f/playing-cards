@@ -1,14 +1,13 @@
 package game.card.playingcards
 
-import game.card.Card
 import game.card.Deck
 
-class PlayingCardDeck(private val list: MutableList<PlayingCard>) : Deck<PlayingCard> {
-    override fun shuffle(): PlayingCardDeck = PlayingCardDeck(list.shuffled().toMutableList())
+class FrenchCardDeck(private val list: MutableList<FrenchCard>) : Deck<FrenchCard> {
+    override fun shuffle(): FrenchCardDeck = FrenchCardDeck(list.shuffled().toMutableList())
 
     override fun size(): Int = list.size
 
-    override fun draw(count: Int, index: Int): List<Card> {
+    override fun draw(count: Int, index: Int): List<FrenchCard> {
         val draws = list.filterIndexed { i, _ -> i >= index }
             .take(count)
             .toList()

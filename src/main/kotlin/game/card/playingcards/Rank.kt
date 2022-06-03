@@ -1,4 +1,4 @@
-package game.card
+package game.card.playingcards
 
 interface Rank {
     val label: String

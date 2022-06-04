@@ -3,23 +3,8 @@ package game.card.poker
 import game.Game
 import game.card.playingcards.*
 import game.card.playingcards.FrenchRank.*
-import tool.sumSkipTake
-import java.lang.Integer.max
 
 interface Poker : Game<FrenchCard>
-
-fun <T: PlayingCard<FrenchSuit, FrenchRank>>sumRankStreak(card: T, streak: Int = 5): Int {
-    val rank = card.rank.order
-    var sum = 0
-    for (i in rank downTo max(rank - (streak - 1), 0)) {
-        sum += i
-    }
-
-    return sum
-}
-
-fun <T: PlayingCard<FrenchSuit, FrenchRank>> Collection<T>.sumSkipTake(take: Int, skip: Int = 0) =
-    sumSkipTake(take, skip) { x -> x.rank.order }
 
 enum class PokerRank(override val label: String, override val order: Int) : Poker, Rank {
     HIGH_CARD("High card", 1) {
@@ -142,10 +127,10 @@ enum class PokerRank(override val label: String, override val order: Int) : Poke
         }
     };
 
-    abstract fun <T: PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>?
+    abstract fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>?
 
     companion object {
-        fun <T: PlayingCard<FrenchSuit, FrenchRank>> rank(cards: Collection<T>): Pair<PokerRank, List<T>>? {
+        fun <T : PlayingCard<FrenchSuit, FrenchRank>> rank(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             val cardsCopy = cards.toMutableList()
 
             return STRAIGHT_FLUSH.match(cardsCopy)

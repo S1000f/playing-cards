@@ -2,7 +2,7 @@ package game.card.playingcards
 
 import game.card.Deck
 
-class FrenchCardDeck(private val list: MutableList<FrenchCard>) : Deck<FrenchCard> {
+data class FrenchCardDeck(private val list: MutableList<FrenchCard>) : Deck<FrenchCard> {
     override fun shuffle(): FrenchCardDeck = FrenchCardDeck(list.shuffled().toMutableList())
 
     override fun size(): Int = list.size
@@ -19,5 +19,8 @@ class FrenchCardDeck(private val list: MutableList<FrenchCard>) : Deck<FrenchCar
 
     override fun toString(): String = list.toString()
 
-    companion object
+    companion object {
+        fun of(vararg pair: Pair<FrenchSuit, FrenchRank>): FrenchCardDeck =
+            FrenchCardDeck(pair.map { FrenchCard(it) }.toMutableList())
+    }
 }

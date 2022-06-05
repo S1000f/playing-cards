@@ -13,6 +13,33 @@ import kotlin.test.assertNotEquals
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PokerTest {
 
+    @DisplayName("these hand-ranking should be a Two-pair")
+    @Test
+    fun twoPairTest() {
+        val hand = PokerHand.of(
+            HEART to TEN,
+            DIAMOND to NINE,
+            CLUB to TEN,
+            SPADE to KING,
+            CLUB to NINE,
+            HEART to THREE
+        )
+
+        val hand1 = PokerHand.of(
+            SPADE to ACE,
+            DIAMOND to SEVEN,
+            HEART to ACE,
+            CLUB to TEN,
+            HEART to SEVEN
+        )
+
+        println(hand)
+        println(hand1)
+
+        assertEquals(TWO_PAIR, hand.rank())
+        assertEquals(TWO_PAIR, hand1.rank())
+    }
+
     @DisplayName("these hand-ranking should be a Trips")
     @Test
     fun tripsRankTest() {
@@ -157,6 +184,9 @@ class PokerTest {
             HEART to KING,
             HEART to TEN
         )
+
+        println(hand)
+        println(hand2)
 
         assertEquals(STRAIGHT_FLUSH, hand.rank())
         assertEquals(STRAIGHT_FLUSH, hand2.rank())

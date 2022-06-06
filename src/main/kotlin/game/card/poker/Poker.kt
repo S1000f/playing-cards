@@ -9,7 +9,21 @@ interface Poker : Game<FrenchCard>
 enum class PokerRank(override val label: String, override val value: Int, override val order: Int) : Poker, Rank {
     HIGH_CARD("High card", 1, 9) {
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
-            TODO("Not yet implemented")
+            with(cards) {
+                if (isEmpty()) return null
+
+                if (groupBy { it.rank.value }.filterValues { it.size >= 2 }.any()) return null
+
+                if (groupBy { it.suit }.filterValues { it.size == 5 }.any()) return null
+
+                for ((index, item) in withIndex()) {
+                    if (sumRankStreak(item) == sumSkipTake(5, skip = index)) {
+                        return null
+                    }
+                }
+
+                return HIGH_CARD to sortedByDescending { it.rank.value }
+            }
         }
     },
 
@@ -132,7 +146,23 @@ enum class PokerRank(override val label: String, override val value: Int, overri
 
     FULL_HOUSE("Full house", 7, 3) {
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
-            TODO("Not yet implemented")
+            if (cards.size < 5) return null
+
+            if (cards.groupBy { it.suit }.filterValues { it.size >= 5 }.any()) return null
+
+            val pairs = cards.groupBy { it.rank.value }
+
+            val trips = pairs.filterValues { it.size == 3 }
+                .values
+                .maxByOrNull { it.first().rank.value } ?: return null
+
+            val twoPair = pairs.filterValues { it.size == 2 }
+                .values
+                .maxByOrNull { it.first().rank.value } ?: return null
+
+            return FULL_HOUSE to trips + twoPair
+
+
         }
     },
 
@@ -177,6 +207,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
                 ?: THREE_OF_A_KIND.match(cardsCopy)
                 ?: TWO_PAIR.match(cardsCopy)
                 ?: ONE_PAIR.match(cardsCopy)
+                ?: HIGH_CARD.match(cardsCopy)
         }
     }
 

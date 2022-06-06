@@ -13,6 +13,22 @@ import kotlin.test.assertNotEquals
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PokerTest {
 
+    @DisplayName("these hand-ranking should be a High-card")
+    @Test
+    fun highCardRankTest() {
+        val hand = PokerHand.of(
+            CLUB to ACE,
+            DIAMOND to THREE,
+            DIAMOND to QUEEN,
+            HEART to SEVEN,
+            SPADE to KING
+        )
+
+        println(hand)
+
+        assertEquals(HIGH_CARD, hand.rank())
+    }
+
     @DisplayName("these hand-ranking should be a One-pair")
     @Test
     fun onePairTest() {

@@ -16,13 +16,15 @@ enum class PokerRank(override val label: String, override val value: Int, overri
 
                 if (groupBy { it.suit }.filterValues { it.size == 5 }.any()) return null
 
-                for ((index, item) in withIndex()) {
-                    if (sumRankStreak(item) == sumSkipTake(5, skip = index)) {
+                val sorted = sortedByDescending { it.rank.value }
+
+                for ((index, item) in sorted.withIndex()) {
+                    if (sumRankStreak(item) == sorted.sumSkipTake(5, skip = index)) {
                         return null
                     }
                 }
 
-                return HIGH_CARD to sortedByDescending { it.rank.value }
+                return HIGH_CARD to sorted
             }
         }
     },
@@ -114,7 +116,6 @@ enum class PokerRank(override val label: String, override val value: Int, overri
                                 .take(5)
                                 .asReversed()
                                 .toMutableList()
-                                .apply { add(0, it) }
                         }
                 }
             }
@@ -146,23 +147,23 @@ enum class PokerRank(override val label: String, override val value: Int, overri
 
     FULL_HOUSE("Full house", 7, 3) {
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
-            if (cards.size < 5) return null
+            with(cards) {
+                if (size < 5) return null
 
-            if (cards.groupBy { it.suit }.filterValues { it.size >= 5 }.any()) return null
+                if (groupBy { it.suit }.filterValues { it.size >= 5 }.any()) return null
 
-            val pairs = cards.groupBy { it.rank.value }
+                val pairs = groupBy { it.rank.value }
 
-            val trips = pairs.filterValues { it.size == 3 }
-                .values
-                .maxByOrNull { it.first().rank.value } ?: return null
+                val trips = pairs.filterValues { it.size == 3 }
+                    .values
+                    .maxByOrNull { it.first().rank.value } ?: return null
 
-            val twoPair = pairs.filterValues { it.size == 2 }
-                .values
-                .maxByOrNull { it.first().rank.value } ?: return null
+                val twoPair = pairs.filterValues { it.size == 2 }
+                    .values
+                    .maxByOrNull { it.first().rank.value } ?: return null
 
-            return FULL_HOUSE to trips + twoPair
-
-
+                return FULL_HOUSE to trips + twoPair
+            }
         }
     },
 
@@ -202,6 +203,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
 
             return STRAIGHT_FLUSH.match(cardsCopy)
                 ?: FOUR_OF_A_KIND.match(cardsCopy)
+                ?: FULL_HOUSE.match(cardsCopy)
                 ?: FLUSH.match(cardsCopy)
                 ?: STRAIGHT.match(cardsCopy)
                 ?: THREE_OF_A_KIND.match(cardsCopy)

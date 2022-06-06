@@ -10,8 +10,9 @@ data class PokerHand(private val cards: MutableList<FrenchCard>) : Hand<FrenchCa
     private val ranks: Pair<PokerRank, List<FrenchCard>>? = PokerRank.rank(cards)
 
     companion object {
-        fun of(vararg pair: Pair<FrenchSuit, FrenchRank>): PokerHand =
-            PokerHand(pair.map { FrenchCard(it) }.toMutableList())
+        fun of(vararg pair: Pair<FrenchSuit, FrenchRank>) = PokerHand(pair.map { FrenchCard(it) }.toMutableList())
+
+        fun of(cards: List<FrenchCard>) = PokerHand(cards.toMutableList())
     }
 
     fun rank(): Rank? = ranks?.first

@@ -24,9 +24,25 @@ class PokerTest {
             SPADE to KING
         )
 
-        println(hand)
+        val hand1 = PokerHand.of(
+            DIAMOND to KING,
+            HEART to JACK,
+            CLUB to TEN,
+            DIAMOND to SIX,
+            DIAMOND to ACE
+        )
+
+        val hand2 = PokerHand.of(
+            HEART to QUEEN,
+            CLUB to FOUR,
+            SPADE to TEN,
+            CLUB to SIX,
+            CLUB to ACE
+        )
 
         assertEquals(HIGH_CARD, hand.rank())
+        assertEquals(HIGH_CARD, hand1.rank())
+        assertEquals(HIGH_CARD, hand2.rank())
     }
 
     @DisplayName("these hand-ranking should be a One-pair")
@@ -178,6 +194,8 @@ class PokerTest {
             HEART to FOUR
         )
 
+        println(hand1)
+
         assertEquals(STRAIGHT, hand.rank())
         assertEquals(STRAIGHT, hand1.rank())
         assertEquals(STRAIGHT, hand2.rank())
@@ -195,6 +213,21 @@ class PokerTest {
         )
 
         assertEquals(FOUR_OF_A_KIND, hand.rank())
+    }
+
+    @DisplayName("these hand-rankings should be a Full-house")
+    @Test
+    fun fullHouseRankTest() {
+        val hand = PokerHand.of(
+            CLUB to SEVEN,
+            SPADE to FIVE,
+            HEART to SEVEN,
+            CLUB to SIX,
+            DIAMOND to SEVEN,
+            HEART to FIVE
+        )
+
+        assertEquals(FULL_HOUSE, hand.rank())
     }
 
     @DisplayName("these hand-rankings should be a STRAIGHT_FLUSH")

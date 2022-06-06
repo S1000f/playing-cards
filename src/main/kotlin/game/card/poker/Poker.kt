@@ -15,7 +15,23 @@ enum class PokerRank(override val label: String, override val value: Int, overri
 
     ONE_PAIR("One pair", 2, 8) {
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
-            TODO("Not yet implemented")
+            if (cards.size < 2) return null
+
+            with(cards.groupBy { it.rank.value }
+                .filterValues { it.size == 2 }.values.sortedByDescending { it.first().rank.value }) {
+
+                if (size != 1) return null
+
+                val kickers = cards.toMutableList()
+                    .apply { removeAll(flatten()) }
+                    .sortedByDescending { it.rank.value }
+                    .take(3)
+
+                return ONE_PAIR to take(1)
+                    .flatten()
+                    .toMutableList()
+                    .apply { addAll(kickers) }
+            }
         }
     },
 
@@ -29,16 +45,14 @@ enum class PokerRank(override val label: String, override val value: Int, overri
                 if (size < 2) return null
 
                 val first = cards.toMutableList()
-                    .apply {
-                        removeAll(flatten())
-                        sortedByDescending { it.rank.value }
-                    }
-                    .first()
+                    .apply { removeAll(flatten()) }
+                    .sortedByDescending { it.rank.value }
+                    .take(1)
 
                 return TWO_PAIR to take(2)
                     .flatten()
                     .toMutableList()
-                    .apply { add(first) }
+                    .apply { addAll(first) }
             }
         }
     },
@@ -81,11 +95,13 @@ enum class PokerRank(override val label: String, override val value: Int, overri
 
                 if (map { it.rank }.containsAll(setOf(FIVE, FOUR, THREE, TWO, ACE))) {
                     return find { it.rank == ACE }
-                        ?.let { STRAIGHT to sortedBy { it.rank.order }
-                            .take(5)
-                            .asReversed()
-                            .toMutableList()
-                            .apply { add(0, it) } }
+                        ?.let {
+                            STRAIGHT to sortedBy { it.rank.order }
+                                .take(5)
+                                .asReversed()
+                                .toMutableList()
+                                .apply { add(0, it) }
+                        }
                 }
             }
 
@@ -160,6 +176,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
                 ?: STRAIGHT.match(cardsCopy)
                 ?: THREE_OF_A_KIND.match(cardsCopy)
                 ?: TWO_PAIR.match(cardsCopy)
+                ?: ONE_PAIR.match(cardsCopy)
         }
     }
 

@@ -4,6 +4,8 @@ import game.card.playingcards.FrenchRank.*
 import game.card.playingcards.FrenchSuit.*
 import game.card.poker.PokerRank.*
 import game.card.playingcards.FrenchCard
+import game.card.playingcards.FrenchCardDeck
+import game.card.playingcards.standard52
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -12,6 +14,22 @@ import kotlin.test.assertNotEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PokerTest {
+
+    @DisplayName("every hand must have a hand-ranking")
+    @Test
+    fun randomRankingTest() {
+        var counter = 0
+
+        repeat(1000) {
+            val deck = FrenchCardDeck.standard52().shuffle()
+            repeat(10) {
+                val hand = PokerHand.of(deck.draw(5))
+                if (hand.rank() == null) counter++
+            }
+        }
+
+        assertEquals(0, counter)
+    }
 
     @DisplayName("these hand-ranking should be a High-card")
     @Test
@@ -57,8 +75,6 @@ class PokerTest {
             CLUB to TWO
         )
 
-        println(hand)
-
         assertEquals(ONE_PAIR, hand.rank())
     }
 
@@ -81,9 +97,6 @@ class PokerTest {
             CLUB to TEN,
             HEART to SEVEN
         )
-
-        println(hand)
-        println(hand1)
 
         assertEquals(TWO_PAIR, hand.rank())
         assertEquals(TWO_PAIR, hand1.rank())
@@ -194,8 +207,6 @@ class PokerTest {
             HEART to FOUR
         )
 
-        println(hand1)
-
         assertEquals(STRAIGHT, hand.rank())
         assertEquals(STRAIGHT, hand1.rank())
         assertEquals(STRAIGHT, hand2.rank())
@@ -250,9 +261,6 @@ class PokerTest {
             HEART to KING,
             HEART to TEN
         )
-
-        println(hand)
-        println(hand2)
 
         assertEquals(STRAIGHT_FLUSH, hand.rank())
         assertEquals(STRAIGHT_FLUSH, hand2.rank())

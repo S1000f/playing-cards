@@ -128,7 +128,11 @@ enum class PokerRank(override val label: String, override val value: Int, overri
         }
 
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int> {
-            TODO("Not yet implemented")
+            return match(cards)
+                ?.second
+                ?.map { it.rank.value }
+                ?.drop(2)
+                ?.toList() ?: emptyList()
         }
     },
 
@@ -160,7 +164,10 @@ enum class PokerRank(override val label: String, override val value: Int, overri
         }
 
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int> {
-            TODO("Not yet implemented")
+            return match(cards)
+                ?.second
+                ?.first()
+                ?.let { listOf(it.rank.value) } ?: emptyList()
         }
     },
 
@@ -183,7 +190,10 @@ enum class PokerRank(override val label: String, override val value: Int, overri
         }
 
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int> {
-            TODO("Not yet implemented")
+            return match(cards)
+                ?.second
+                ?.map { it.rank.value }
+                ?.toList() ?: emptyList()
         }
     },
 
@@ -209,7 +219,10 @@ enum class PokerRank(override val label: String, override val value: Int, overri
         }
 
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int> {
-            TODO("Not yet implemented")
+            return match(cards)
+                ?.second
+                ?.map { it.rank.value }
+                ?.let { listOf(it.first(), it.last()) } ?: emptyList()
         }
     },
 
@@ -225,7 +238,10 @@ enum class PokerRank(override val label: String, override val value: Int, overri
         }
 
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int> {
-            TODO("Not yet implemented")
+            return match(cards)
+                ?.second
+                ?.map { it.rank.value }
+                ?.let { listOf(it.first(), it.last()) } ?: emptyList()
         }
     },
 
@@ -245,7 +261,10 @@ enum class PokerRank(override val label: String, override val value: Int, overri
         }
 
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int> {
-            TODO("Not yet implemented")
+            return match(cards)
+                ?.second
+                ?.first()
+                ?.let { listOf(it.rank.value) } ?: emptyList()
         }
     };
 

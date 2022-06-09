@@ -6,12 +6,15 @@ import game.card.playingcards.FrenchRank.*
 
 interface Poker : Game<FrenchCard> {
 
-    fun showdown(hand1: PokerHand, hand2: PokerHand): Int {
+    companion object {
+        fun showdown(hand1: PokerHand, hand2: PokerHand): Int {
+            val toList = hand1.kicker()
+                .indices
+                .map { { x: PokerHand -> x.kicker()[it] } }
+                .toList()
 
-
-        val comparingInt = Comparator.comparingInt<PokerHand> { it.ranking?.first?.value ?: 0 }
-
-        return 0
+            return compareValuesBy(hand1, hand2, { it.rank()?.value }, *toList.toTypedArray())
+        }
     }
 }
 
@@ -41,7 +44,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
             return match(cards)
                 ?.second
                 ?.map { it.rank.value }
-                ?.toList() ?: return emptyList()
+                ?.toList() ?: emptyList()
         }
     },
 
@@ -231,7 +234,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
             if (cards.size < 5) return null
 
             with(cards.groupBy { it.rank.value }) {
-                if (!any { it.value.size == 4}) {
+                if (!any { it.value.size == 4 }) {
                     return null
                 }
 

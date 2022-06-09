@@ -61,6 +61,13 @@ class PokerHandTest {
         assertEquals(0, counter)
     }
 
+    @DisplayName("Straight-flush ranking kickers")
+    @Test
+    fun straightFlushKickerTest() {
+        assertEquals(listOf(13), straightFlush0.kicker())
+        assertEquals(listOf(14), straightFlush1.kicker())
+    }
+
     @DisplayName("Quads ranking kickers")
     @Test
     fun quadsKickerTest() {

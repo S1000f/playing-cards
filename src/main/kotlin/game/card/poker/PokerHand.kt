@@ -6,7 +6,7 @@ import game.card.playingcards.FrenchSuit
 import game.card.playingcards.FrenchCard
 
 data class PokerHand(private val cards: MutableList<FrenchCard>) : Hand<FrenchCard> {
-    val ranking: Pair<PokerRank, List<FrenchCard>>? = PokerRank.rank(cards)
+    private val ranking: Pair<PokerRank, List<FrenchCard>>? = PokerRank.rank(cards)
 
     companion object {
         fun of(vararg pair: Pair<FrenchSuit, FrenchRank>) = PokerHand(pair.map { FrenchCard(it) }.toMutableList())

@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PokerTest {
+class PokerHandTest {
     private val highCard0 =
         PokerHand.of(CLUB to ACE, DIAMOND to THREE, DIAMOND to QUEEN, HEART to SEVEN, SPADE to KING)
     private val highCard1 =
@@ -59,6 +59,24 @@ class PokerTest {
         }
 
         assertEquals(0, counter)
+    }
+
+    @DisplayName("Quads ranking kickers")
+    @Test
+    fun quadsKickerTest() {
+        assertEquals(listOf(11, 13), quads0.kicker())
+    }
+
+    @DisplayName("Full-house ranking kickers")
+    @Test
+    fun fullHouseTest() {
+        assertEquals(listOf(7, 5), fullHouse0.kicker())
+    }
+
+    @DisplayName("Flush ranking kickers")
+    @Test
+    fun flushKickerTest() {
+        assertEquals(listOf(13, 12, 11, 5, 3), flush0.kicker())
     }
 
     @DisplayName("Straight ranking kickers")

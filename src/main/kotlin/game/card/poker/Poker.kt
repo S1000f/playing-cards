@@ -230,10 +230,21 @@ enum class PokerRank(override val label: String, override val value: Int, overri
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             if (cards.size < 5) return null
 
-            with(cards.sortedByDescending { it.rank.value }) {
-                return withIndex()
-                    .any { it.value.rank.value * 4 == sumSkipTake(4, it.index) }
-                    .let { if (it) FOUR_OF_A_KIND to this else null }
+            with(cards.groupBy { it.rank.value }) {
+                if (!any { it.value.size == 4}) {
+                    return null
+                }
+
+                val fourCard = filterValues { it.size == 4 }
+                    .values
+                    .maxByOrNull { it.first().rank.value } ?: return null
+
+                val apply = cards.toMutableList()
+                    .apply { removeAll(fourCard) }
+                    .sortedByDescending { it.rank.value }
+                    .take(1)
+
+                return FOUR_OF_A_KIND to fourCard.toMutableList().apply { addAll(4, apply) }
             }
         }
 

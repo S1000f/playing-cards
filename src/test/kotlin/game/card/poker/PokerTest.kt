@@ -31,7 +31,7 @@ class PokerTest {
     private val trips1 =
         PokerHand.of(HEART to TEN, DIAMOND to TEN, HEART to THREE, CLUB to TEN, SPADE to NINE)
     private val trips2 =
-        PokerHand.of(CLUB to TWO, SPADE to FOUR, SPADE to EIGHT, CLUB to KING, HEART to TWO, DIAMOND to TWO)
+        PokerHand.of(CLUB to TEN, SPADE to FOUR, SPADE to NINE, CLUB to FOUR, HEART to TEN, DIAMOND to TEN)
     private val straight0 =
         PokerHand.of(CLUB to JACK, DIAMOND to QUEEN, DIAMOND to ACE, HEART to THREE, CLUB to KING, SPADE to TEN)
     private val straight1 =
@@ -40,10 +40,16 @@ class PokerTest {
         PokerHand.of(SPADE to KING, HEART to SEVEN, DIAMOND to FIVE, CLUB to SIX, CLUB to EIGHT, HEART to FOUR)
     private val flush0 =
         PokerHand.of(CLUB to KING, CLUB to QUEEN, CLUB to FIVE, CLUB to JACK, CLUB to THREE, CLUB to TWO)
+    private val flush1 =
+        PokerHand.of(CLUB to KING, CLUB to QUEEN, CLUB to FIVE, CLUB to JACK, CLUB to FOUR, CLUB to TWO)
     private val fullHouse0 =
         PokerHand.of(CLUB to SEVEN, SPADE to FIVE, HEART to SEVEN, CLUB to SIX, DIAMOND to SEVEN, HEART to FIVE)
+    private val fullHouse1 =
+        PokerHand.of(CLUB to SEVEN, SPADE to FOUR, HEART to SEVEN, DIAMOND to SEVEN, HEART to FOUR)
     private val quads0 =
         PokerHand.of(DIAMOND to JACK, CLUB to JACK, HEART to KING, SPADE to JACK, HEART to JACK)
+    private val quads1 =
+        PokerHand.of(DIAMOND to JACK, CLUB to JACK, HEART to QUEEN, SPADE to JACK, HEART to JACK)
     private val straightFlush0 =
         PokerHand.of(CLUB to QUEEN, CLUB to KING, DIAMOND to JACK, CLUB to JACK, CLUB to NINE, CLUB to TEN)
     private val straightFlush1 =
@@ -51,6 +57,30 @@ class PokerTest {
 
     @Test
     fun showdownWithTheSameRankTest() {
+        assertEquals(1, Poker.showdown(straightFlush1, straightFlush0))
+        assertEquals(-1, Poker.showdown(straightFlush0, straightFlush1))
+        assertEquals(0, Poker.showdown(straightFlush0, straightFlush0))
+
+        assertEquals(1, Poker.showdown(quads0, quads1))
+        assertEquals(-1, Poker.showdown(quads1, quads0))
+        assertEquals(0, Poker.showdown(quads1, quads1))
+
+        assertEquals(1, Poker.showdown(fullHouse0, fullHouse1))
+        assertEquals(-1, Poker.showdown(fullHouse1, fullHouse0))
+        assertEquals(0, Poker.showdown(fullHouse1, fullHouse1))
+
+        assertEquals(1, Poker.showdown(flush1, flush0))
+        assertEquals(-1, Poker.showdown(flush0, flush1))
+        assertEquals(0, Poker.showdown(flush1, flush1))
+
+        assertEquals(1, Poker.showdown(straight2, straight1))
+        assertEquals(-1, Poker.showdown(straight1, straight0))
+        assertEquals(0, Poker.showdown(straight2, straight2))
+
+        assertEquals(1, Poker.showdown(trips2, trips1))
+        assertEquals(-1, Poker.showdown(trips1, trips0))
+        assertEquals(0, Poker.showdown(trips0, trips0))
+
         assertEquals(-1, Poker.showdown(twoPair2, twoPair1))
         assertEquals(1, Poker.showdown(twoPair1, twoPair0))
         assertEquals(0, Poker.showdown(twoPair0, twoPair0))

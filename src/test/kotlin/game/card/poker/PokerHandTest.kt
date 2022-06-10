@@ -61,6 +61,14 @@ class PokerHandTest {
         assertEquals(0, counter)
     }
 
+    @Test
+    fun pokerHandDelegateTest() {
+        val copy = straight1.copy()
+        println(copy)
+        copy.add(CLUB to SIX)
+        println(copy)
+    }
+
     @DisplayName("Straight-flush ranking kickers")
     @Test
     fun straightFlushKickerTest() {

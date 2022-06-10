@@ -1,5 +1,7 @@
 package game.card
 
 interface Hand<Card> {
-    fun size(): Int
+    fun count(): Int
+    fun add(element: Card): Boolean
+    fun addAll(elements: Collection<Card>): Boolean
 }

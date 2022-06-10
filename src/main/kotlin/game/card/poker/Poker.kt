@@ -148,7 +148,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
             with(distinct.sortedByDescending { card -> card.rank.value }) {
                 for ((index, item) in withIndex()) {
                     if (sumRankStreak(item) == sumSkipTake(5, skip = index)) {
-                        return STRAIGHT to drop(index)
+                        return STRAIGHT to drop(index).take(5)
                     }
                 }
 

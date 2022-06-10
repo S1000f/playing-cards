@@ -63,10 +63,9 @@ class PokerHandTest {
 
     @Test
     fun pokerHandDelegateTest() {
-        val copy = straight1.copy()
-        println(copy)
-        copy.add(CLUB to SIX)
-        println(copy)
+        val added = straight1.add(DIAMOND to SIX)
+        println(straight1)
+        println(added)
     }
 
     @DisplayName("Straight-flush ranking kickers")

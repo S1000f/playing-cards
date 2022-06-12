@@ -55,7 +55,7 @@ class PokerHandTest {
 
         repeat(100) {
             val deck = FrenchCardDeck.standard52().shuffle()
-            repeat(10) { if (PokerHand.of(deck.draw(5)).rank() == null) counter++ }
+            repeat(10) { if (PokerHand.of(deck.draw(5).second).rank() == null) counter++ }
         }
 
         assertEquals(0, counter)

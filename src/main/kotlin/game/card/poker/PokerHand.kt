@@ -1,5 +1,6 @@
 package game.card.poker
 
+import game.card.Card
 import game.card.Hand
 import game.card.playingcards.FrenchRank
 import game.card.playingcards.FrenchSuit
@@ -22,10 +23,9 @@ data class PokerHand(private val cards: List<FrenchCard>) : Hand<FrenchCard>, Li
     fun add(card: Pair<FrenchSuit, FrenchRank>) = add(FrenchCard(card))
     fun addAll(vararg cards: Pair<FrenchSuit, FrenchRank>) = addAll(cards.map { FrenchCard(it) })
 
-    override fun add(element: FrenchCard) = PokerHand(this.cards.toMutableList().apply { add(element) }.toList())
+    override fun add(card: FrenchCard) = of(this.cards.toMutableList().apply { add(card) }.toList())
 
-    override fun addAll(elements: Collection<FrenchCard>) =
-        PokerHand(cards.toMutableList().apply { addAll(elements) }.toList())
+    override fun addAll(cards: Collection<FrenchCard>) = of(this.cards.toMutableList().apply { addAll(cards) }.toList())
 
     override fun count() = cards.size
 
@@ -36,3 +36,6 @@ data class PokerHand(private val cards: List<FrenchCard>) : Hand<FrenchCard>, Li
         """.trimIndent()
     }
 }
+
+operator fun PokerHand.plus(x: FrenchCard) = this.add(x)
+operator fun FrenchCard.plus(x: PokerHand) = x.add(this)

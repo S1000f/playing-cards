@@ -17,6 +17,7 @@ data class PokerHand(private val cards: List<FrenchCard>) : Hand<FrenchCard>, Li
     }
 
     fun rank(): PokerRank? = ranking?.first
+    fun rankCards() = ranking?.second
 
     fun kicker(): List<Int> = rank()?.getKicker(ranking?.second ?: emptyList()) ?: emptyList()
     fun add(card: Pair<FrenchSuit, FrenchRank>) = add(FrenchCard(card))
@@ -38,3 +39,6 @@ data class PokerHand(private val cards: List<FrenchCard>) : Hand<FrenchCard>, Li
 
 operator fun PokerHand.plus(x: FrenchCard) = this.add(x)
 operator fun FrenchCard.plus(x: PokerHand) = x.add(this)
+
+operator fun PokerHand.plus(p: Pair<FrenchSuit, FrenchRank>) = this.add(p)
+operator fun Pair<FrenchSuit, FrenchRank>.plus(x: PokerHand) = x.add(this)

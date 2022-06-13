@@ -1,5 +1,6 @@
 package game.card.poker
 
+import game.card.playingcards.FrenchCard
 import game.card.playingcards.FrenchRank.*
 import game.card.playingcards.FrenchSuit.*
 import game.card.poker.PokerRank.*
@@ -59,6 +60,20 @@ class PokerHandTest {
         }
 
         assertEquals(0, counter)
+    }
+
+    @Test
+    fun rankCardsTest() {
+        val rankCards = straight0.rankCards()
+        assertEquals(
+            listOf(
+                FrenchCard(DIAMOND to ACE),
+                FrenchCard(CLUB to KING),
+                FrenchCard(DIAMOND to QUEEN),
+                FrenchCard(CLUB to JACK),
+                FrenchCard(SPADE to TEN)
+            ), rankCards
+        )
     }
 
     @Test

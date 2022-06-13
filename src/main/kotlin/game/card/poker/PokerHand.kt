@@ -1,6 +1,5 @@
 package game.card.poker
 
-import game.card.Card
 import game.card.Hand
 import game.card.playingcards.FrenchRank
 import game.card.playingcards.FrenchSuit

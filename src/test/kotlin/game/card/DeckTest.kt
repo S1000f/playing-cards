@@ -5,6 +5,7 @@ import game.card.playingcards.FrenchCardDeck
 import game.card.playingcards.FrenchSuit.*
 import game.card.playingcards.FrenchRank.*
 import game.card.playingcards.standard52
+import game.card.playingcards.minus
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -54,6 +55,26 @@ class DeckTest {
         assertEquals(2, cards2.size)
         assertEquals(FrenchCard(SPADE to THREE), cards2.first())
         assertEquals(FrenchCard(SPADE to FOUR), cards2.component2())
+    }
+
+    @DisplayName("test Deck operator minus")
+    @Test
+    fun deckOperatorMinusTest() {
+        val (deck, cards) = deckSupertype - 2
+
+        assertNotSame(deck, deckSupertype)
+        assertEquals(52, deckSupertype.size())
+        assertEquals(50, deck.size())
+        assertEquals(2, cards.size)
+        assertEquals(listOf(FrenchCard(SPADE to ACE), FrenchCard(SPADE to TWO)), cards)
+
+        val (deck1: FrenchCardDeck, frenchCards) = deckConcrete - 1
+
+        assertNotSame(deck1, deckSupertype)
+        assertEquals(52, deckSupertype.size())
+        assertEquals(51, deck1.size())
+        assertEquals(1, frenchCards.size)
+        assertEquals(listOf(FrenchCard(SPADE to ACE)), frenchCards)
     }
 
     @DisplayName("test Deck shuffle()")

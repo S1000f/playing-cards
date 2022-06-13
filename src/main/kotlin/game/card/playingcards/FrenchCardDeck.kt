@@ -19,5 +19,6 @@ data class FrenchCardDeck(private val cards: List<FrenchCard>) : Deck<FrenchCard
         }
 
     override fun toString(): String = cards.toString()
-
 }
+
+operator fun FrenchCardDeck.minus(x: Int) = this.draw(x)

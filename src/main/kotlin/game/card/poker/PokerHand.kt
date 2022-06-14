@@ -16,18 +16,24 @@ data class PokerHand(private val cards: List<FrenchCard>) : Hand<FrenchCard>, Li
         fun empty() = PokerHand(listOf())
     }
 
-    fun rank(): PokerRank? = ranking?.first
-    fun rankCards() = ranking?.second
-
-    fun kicker(): List<Int> = rank()?.getKicker(ranking?.second ?: emptyList()) ?: emptyList()
-    fun add(card: Pair<FrenchSuit, FrenchRank>) = add(FrenchCard(card))
-    fun addAll(vararg cards: Pair<FrenchSuit, FrenchRank>) = addAll(cards.map { FrenchCard(it) })
-
     override fun add(card: FrenchCard) = of(this.cards.toMutableList().apply { add(card) }.toList())
 
     override fun addAll(cards: Collection<FrenchCard>) = of(this.cards.toMutableList().apply { addAll(cards) }.toList())
 
     override fun count() = cards.size
+
+    override fun draw(count: Int, index: Int) =
+        with(cards.filterIndexed { i, _ -> i >= index }
+            .take(count)
+            .toList()) {
+            PokerHand(cards.toMutableList().apply { removeAll(this@with) }.toList()) to this
+        }
+
+    fun rank(): PokerRank? = ranking?.first
+    fun rankCards() = ranking?.second
+    fun kicker(): List<Int> = rank()?.getKicker(ranking?.second ?: emptyList()) ?: emptyList()
+    fun add(card: Pair<FrenchSuit, FrenchRank>) = add(FrenchCard(card))
+    fun addAll(vararg cards: Pair<FrenchSuit, FrenchRank>) = addAll(cards.map { FrenchCard(it) })
 
     override fun toString(): String {
         return """
@@ -42,3 +48,5 @@ operator fun FrenchCard.plus(x: PokerHand) = x.add(this)
 
 operator fun PokerHand.plus(p: Pair<FrenchSuit, FrenchRank>) = this.add(p)
 operator fun Pair<FrenchSuit, FrenchRank>.plus(x: PokerHand) = x.add(this)
+
+operator fun PokerHand.minus(x: Int) = this.draw(x)

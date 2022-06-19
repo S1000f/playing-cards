@@ -5,9 +5,12 @@ import game.card.poker.PokerHand
 fun main() {
 
     val deck = FrenchCardDeck.standard52().shuffle()
+    var altered: FrenchCardDeck = deck
     repeat(11) {
-        val hand = PokerHand.of(deck.draw(5).second)
-        hand.rank()?.let { println(if (it.value >= 5) "$hand =-=-=-=-=-=-=-=-" else "$hand") }
+        val (alt, cards) = altered.draw(5)
+        altered = alt
+        val hand = PokerHand.of(cards)
+        println(if (hand.rank().value >= 5) "$hand =-=-=-=-=-=-=-=-" else "$hand")
     }
 
 }

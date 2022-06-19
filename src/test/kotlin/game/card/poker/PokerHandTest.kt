@@ -9,6 +9,7 @@ import game.card.playingcards.standard52
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
@@ -52,14 +53,12 @@ class PokerHandTest {
     @DisplayName("every hand must have a hand-ranking")
     @Test
     fun randomRankingTest() {
-        var counter = 0
-
-        repeat(100) {
-            val deck = FrenchCardDeck.standard52().shuffle()
-            repeat(10) { if (PokerHand.of(deck.draw(5).second).rank() == null) counter++ }
+        assertDoesNotThrow {
+            repeat(100) {
+                val deck = FrenchCardDeck.standard52().shuffle()
+                repeat(10) { PokerHand.of(deck.draw(5).second) }
+            }
         }
-
-        assertEquals(0, counter)
     }
 
     @Test
@@ -74,6 +73,27 @@ class PokerHandTest {
                 FrenchCard(SPADE to TEN)
             ), rankCards
         )
+    }
+
+    @Test
+    fun noneRankingTest() {
+        val size4Hand = PokerHand.of(SPADE to ACE, SPADE to KING, SPADE to QUEEN, SPADE to JACK)
+
+        assertEquals(NONE, size4Hand.rank())
+        assertEquals(emptyList(), size4Hand.rankCards())
+        assertEquals(emptyList(), size4Hand.kicker())
+
+        val size4Hand0 = PokerHand.of(HEART to FIVE, CLUB to FIVE, DIAMOND to SIX, DIAMOND to KING)
+
+        assertEquals(NONE, size4Hand0.rank())
+        assertEquals(emptyList(), size4Hand0.rankCards())
+        assertEquals(emptyList(), size4Hand0.kicker())
+
+        val size2Hand = PokerHand.of(CLUB to ACE, DIAMOND to ACE)
+
+        assertEquals(NONE, size2Hand.rank())
+        assertEquals(emptyList(), size2Hand.rankCards())
+        assertEquals(emptyList(), size2Hand.kicker())
     }
 
     @Test

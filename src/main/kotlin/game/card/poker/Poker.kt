@@ -13,12 +13,20 @@ interface Poker : Game<FrenchCard> {
                 .map { { x: PokerHand -> x.kicker()[it] } }
                 .toList()
 
-            return compareValuesBy(hand1, hand2, { it.rank()?.value }, *toList.toTypedArray())
+            return compareValuesBy(hand1, hand2, { it.rank().value }, *toList.toTypedArray())
         }
     }
 }
 
-enum class PokerRank(override val label: String, override val value: Int, override val order: Int) : Poker, Rank {
+enum class PokerRank(override val label: String, override val value: Int, override val order: Int) : Rank {
+    NONE("No hand-ranking", 0, 99) {
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>> {
+            return this to emptyList()
+        }
+
+        override fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int> = emptyList()
+    },
+
     HIGH_CARD("High card", 1, 9) {
         override fun <T : PlayingCard<FrenchSuit, FrenchRank>> match(cards: Collection<T>): Pair<PokerRank, List<T>>? {
             with(cards) {
@@ -287,7 +295,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
     abstract fun <T : PlayingCard<FrenchSuit, FrenchRank>> getKicker(cards: List<T>): List<Int>
 
     companion object {
-        fun <T : PlayingCard<FrenchSuit, FrenchRank>> rank(cards: Collection<T>): Pair<PokerRank, List<T>>? {
+        fun <T : PlayingCard<FrenchSuit, FrenchRank>> rank(cards: Collection<T>): Pair<PokerRank, List<T>> {
             val cardsCopy = cards.toMutableList()
 
             return STRAIGHT_FLUSH.match(cardsCopy)
@@ -299,6 +307,7 @@ enum class PokerRank(override val label: String, override val value: Int, overri
                 ?: TWO_PAIR.match(cardsCopy)
                 ?: ONE_PAIR.match(cardsCopy)
                 ?: HIGH_CARD.match(cardsCopy)
+                ?: NONE.match(cardsCopy) as Pair<PokerRank, List<T>>
         }
     }
 

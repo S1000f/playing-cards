@@ -6,7 +6,7 @@ import game.card.playingcards.FrenchSuit
 import game.card.playingcards.FrenchCard
 
 data class PokerHand(private val cards: List<FrenchCard>) : Hand<FrenchCard>, List<FrenchCard> by cards {
-    private val ranking: Pair<PokerRank, List<FrenchCard>>? = PokerRank.rank(cards)
+    private val ranking: Pair<PokerRank, List<FrenchCard>> = PokerRank.rank(cards)
 
     companion object {
         fun of(vararg pair: Pair<FrenchSuit, FrenchRank>) = PokerHand(pair.map { FrenchCard(it) }.toList())
@@ -29,9 +29,9 @@ data class PokerHand(private val cards: List<FrenchCard>) : Hand<FrenchCard>, Li
             PokerHand(cards.toMutableList().apply { removeAll(this@with) }.toList()) to this
         }
 
-    fun rank(): PokerRank? = ranking?.first
-    fun rankCards() = ranking?.second
-    fun kicker(): List<Int> = rank()?.getKicker(ranking?.second ?: emptyList()) ?: emptyList()
+    fun rank(): PokerRank = ranking.first
+    fun rankCards() = ranking.second
+    fun kicker(): List<Int> = rank().getKicker(ranking.second)
     fun add(card: Pair<FrenchSuit, FrenchRank>) = add(FrenchCard(card))
     fun addAll(vararg cards: Pair<FrenchSuit, FrenchRank>) = addAll(cards.map { FrenchCard(it) })
 
